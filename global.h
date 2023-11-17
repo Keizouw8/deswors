@@ -1,1 +1,1 @@
-unsigned char precision = 10;
+unsigned char accuracy = 10;
