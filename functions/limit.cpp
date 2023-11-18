@@ -1,4 +1,4 @@
-#include "derivative.cpp"
+#include "derivative.hpp"
 #include <math.h>
 
 double side_limit(int direction, double x, double (*f)(double)){
