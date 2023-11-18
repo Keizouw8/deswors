@@ -1,9 +1,21 @@
-#include "../global.h"
 #include "derivative.c"
+#include <math.h>
 
 double integral(double a, double b, double (*f)(double)){
-    unsigned int n = 10;
-    double dx = (a - b)/n;
+    if(a == b) return 0;
+    if(a > b) return -integral(b, a, f);
+
+    const double step = fmax(0.1, (b - a)/1.0e3);
+
+    double k = 0;
+    for(double i = a; i <= b; i += step){
+        double temp = fabs(n_deriv(4, i, f));
+        if(temp > k) k = temp;
+    }
+
+    unsigned int n = ceil(pow(fabs(k * pow(b - a, 5) / 180e-11), 0.25));
+    if(n % 2 == 1) n++;
+    double dx = (b - a)/n;
 
     double sum = 0;
     for(int i = 0; i <= n; i++){
