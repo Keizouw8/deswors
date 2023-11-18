@@ -1,2 +1,2 @@
-# deswors
-Desmos(t)? More like Deswors(t).
+# Deswors(t)
+A desktop graphing calculator that is far worse than Desmos(t)
