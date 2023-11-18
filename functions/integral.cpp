@@ -1,5 +1,5 @@
-#include "../global.h"
-#include "derivative.c"
+#include "../global.hpp"
+#include "derivative.cpp"
 #include <math.h>
 
 double integral(double a, double b, double (*f)(double)){
