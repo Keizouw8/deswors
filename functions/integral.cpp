@@ -1,12 +1,12 @@
 #include "../global.hpp"
-#include "derivative.cpp"
+#include "derivative.hpp"
 #include <math.h>
 
 double integral(double a, double b, double (*f)(double)){
     if(a == b) return 0;
     if(a > b) return -integral(b, a, f);
 
-    const double step = fmax(0.1, (b - a)/1.0e3);
+    const double step = (b - a)/fmin(1.0e6, (b - a)*1.0e3);
 
     double k = 0;
     for(double i = a; i <= b; i += step){
