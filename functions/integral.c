@@ -1,3 +1,4 @@
+#include "../global.h"
 #include "derivative.c"
 #include <math.h>
 
@@ -13,7 +14,7 @@ double integral(double a, double b, double (*f)(double)){
         if(temp > k) k = temp;
     }
 
-    unsigned int n = ceil(pow(fabs(k * pow(b - a, 5) / 180e-11), 0.25));
+    unsigned int n = ceil(pow(fabs(k * pow(b - a, 5) / (180 * recip_acc)), 0.25));
     if(n % 2 == 1) n++;
     double dx = (b - a)/n;
 
