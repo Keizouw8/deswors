@@ -1,2 +1,2 @@
-unsigned int accuracy = 5;
-double recip_acc = 1e-6;
+unsigned int accuracy = 1;
+double recip_acc = 1e-2;
