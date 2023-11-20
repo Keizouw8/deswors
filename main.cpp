@@ -1,6 +1,4 @@
 #include <SFML/Graphics.hpp>
-#include "widgets/Gui/Gui.hpp"
-#include "widgets/Gui/Theme.hpp"
 #include "color.hpp"
 #include "view.cpp"
 #include "functions/integral.hpp"
@@ -19,7 +17,6 @@ int main(){
 	functions.push_back(std::pair<Color, double (*)(double)>(colors[2], intLinear));
 	functions.push_back(std::pair<Color, double (*)(double)>(colors[3], intSquare));
 	
-
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Deswors");
 	sf::View defaultView = window.getDefaultView();
 	sf::Vector2i previousSize(800, 600);
@@ -32,10 +29,6 @@ int main(){
 	Point viewOrigin = {0, 0};
 	Point viewDimensions = {4, 4};
 	sf::Sprite viewSprite = generateView(&viewTexture, { { 500, 600 }, viewOrigin, viewDimensions }, functions);
-
-	gui::Menu menu(window);
-	menu.setPosition(0, 0);
-	gui::Theme::loadFont("static/cmusr.ttf");
 
 	bool viewDrag = false;
 	sf::Vector2i previousMousePosition;
@@ -92,13 +85,11 @@ int main(){
 				}
 				previousMousePosition = currentMousePosition;
 			}
-			menu.onEvent(event);
 		}
 
 		window.clear(primary.main);
 		window.draw(viewSprite);
 		window.draw(sidebar);
-		window.draw(menu);
 		window.display();
 	}
 
