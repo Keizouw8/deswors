@@ -1,21 +1,22 @@
 #include <SFML/Graphics.hpp>
-#include "color.hpp"
-#include "view.cpp"
-#include "functions/integral.hpp"
 #include <math.h>
 #include <vector>
+#include "global.hpp"
+#include "view.cpp"
+#include "functions/integral.hpp"
 
 double linear(double x) { return x; }
 double square(double x) { return x * x; }
 double intLinear(double x) { return integral(0, x, linear); }
-double intSquare(double x) { return integral(0, x, square); }
+
+Settings settings;
 
 int main(){
+	settings.import("settings.yaml");
 	std::vector<std::pair<Color, double (*)(double)>> functions;
-	functions.push_back(std::pair<Color, double (*)(double)>(colors[0], linear));
-	functions.push_back(std::pair<Color, double (*)(double)>(colors[1], square));
-	functions.push_back(std::pair<Color, double (*)(double)>(colors[2], intLinear));
-	functions.push_back(std::pair<Color, double (*)(double)>(colors[3], intSquare));
+	functions.push_back(std::pair<Color, double (*)(double)>(settings.colors[1], linear));
+	functions.push_back(std::pair<Color, double (*)(double)>(settings.colors[2], square));
+	functions.push_back(std::pair<Color, double (*)(double)>(settings.colors[3], intLinear));
 	
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Deswors");
 	sf::View defaultView = window.getDefaultView();
@@ -87,7 +88,7 @@ int main(){
 			}
 		}
 
-		window.clear(primary.main);
+		window.clear(settings.colors[0].main);
 		window.draw(viewSprite);
 		window.draw(sidebar);
 		window.display();

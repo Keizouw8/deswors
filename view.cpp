@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "color.hpp"
+#include "global.hpp"
 #include <math.h>
 #include <map>
 
