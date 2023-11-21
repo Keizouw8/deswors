@@ -6,6 +6,6 @@ endif
 
 all: compile run
 compile: ./main.cpp
-	g++ ./*.cpp functions/* -o build/app $(CCFLAGS) -lsfml-graphics -lsfml-window -lsfml-system -lyaml-cpp
+	g++ ./*.cpp functions/* -o build/app -std=c++20 $(CCFLAGS) -lsfml-graphics -lsfml-window -lsfml-system -lyaml-cpp
 run:
 	./build/app

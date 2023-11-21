@@ -2,8 +2,11 @@
 #include "global.hpp"
 #include "view.hpp"
 #include <math.h>
+#include <thread>
 
-sf::Sprite generateView(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color, double (*)(double)>> functions){
+std::jthread running;
+
+void viewThread(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color, double (*)(double)>> functions){
 	sf::Image image;
 	image.create(view.box.x, view.box.y, sf::Color::Transparent);
 
@@ -20,9 +23,9 @@ sf::Sprite generateView(sf::Texture *texture, ViewPort view, std::vector<std::pa
 				int minY = std::min(rawY, lastY);
 				int highY = std::max(rawY, lastY);
 
-				for(int i = minY - 1; i <= highY + 1; i++){
+				for(int i = minY; i <= highY + 1; i++){
 					if(i < 0 || i >= view.box.y) continue;
-					for(int o = rawX - 1; o <= rawX + 1; o++){
+					for(int o = rawX; o <= rawX + 1; o++){
 						if(o < 0 || o >= view.box.x) continue;
 						image.setPixel(o, i, color.main);
 					}
@@ -34,11 +37,17 @@ sf::Sprite generateView(sf::Texture *texture, ViewPort view, std::vector<std::pa
 	}
 
 	texture->loadFromImage(image);
+}
 
+sf::Sprite generateView(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color, double (*)(double)>> functions){
 	sf::Sprite sprite;
+	sprite.setTexture(*texture);
 	sprite.setScale(1, 1);
     sprite.setPosition(300, 0);
-    sprite.setTexture(*texture);
+
+	running.request_stop();
+	running = std::jthread(viewThread, texture, view, functions);
+	running.join();
 
 	return sprite;
 }

@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 #include <vector>
+#include <thread>
 #include "global.hpp"
 #include "view.hpp"
 #include "functions/integral.hpp"
@@ -32,7 +33,9 @@ int main(){
 	sf::Sprite viewSprite = generateView(&viewTexture, { { 500, 600 }, viewOrigin, viewDimensions }, functions);
 
 	bool viewDrag = false;
+	bool isScrolling = false;
 	sf::Vector2i previousMousePosition;
+	sf::Clock scrollingClock;
 
 	while(window.isOpen()){
 		sf::Event event;
@@ -86,6 +89,31 @@ int main(){
 				}
 				previousMousePosition = currentMousePosition;
 			}
+			if(event.type == sf::Event::MouseWheelScrolled){
+				float zoom = event.mouseWheelScroll.delta;
+                sf::Vector2f previousScale = viewSprite.getScale();
+				sf::FloatRect previousPosition = viewSprite.getGlobalBounds();
+                sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+                
+                isScrolling = true;
+                scrollingClock.restart();
+
+                viewSprite.setScale(previousScale.x + zoom / 10.f, previousScale.y + zoom / 10.f);
+				sf::FloatRect position = viewSprite.getGlobalBounds();
+				viewSprite.move((previousPosition.width - position.width)/2, (previousPosition.height - position.height)/2);
+			}else{
+                if(isScrolling) if(scrollingClock.getElapsedTime().asMilliseconds() > 300){
+                    isScrolling = false;
+
+                    if(!viewDrag){
+                        sf::Vector2f scale = viewSprite.getScale();
+                        viewDimensions.x /= scale.x;
+                        viewDimensions.y /= scale.y;
+
+                        viewSprite = generateView(&viewTexture, { { (double)window.getSize().x - 300, (double)window.getSize().y }, viewOrigin, viewDimensions }, functions);
+                    }
+                }
+            }
 		}
 
 		window.clear(settings.colors[0].main);
