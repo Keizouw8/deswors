@@ -2,26 +2,34 @@
 #include "global.hpp"
 #include "view.hpp"
 #include <math.h>
-#include <map>
 
 sf::Sprite generateView(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color, double (*)(double)>> functions){
 	sf::Image image;
 	image.create(view.box.x, view.box.y, sf::Color::Transparent);
 
-	for(int rawX = 0; rawX < view.box.x; rawX++){
-		double x = view.origin.x + (rawX - view.box.x / 2) * view.viewBox.x / view.box.x;
+	for (auto const& [color, function] : functions){
+		float lastY = NAN;
 
-		for (auto const& [color, function] : functions){	
+		for(int rawX = 0; rawX < view.box.x; rawX++){
+			double x = view.origin.x + (rawX - view.box.x / 2) * view.viewBox.x / view.box.x;
 			double y = function(x);
-			int rawY = view.box.y / 2 - (y - view.origin.y) * view.box.y / view.viewBox.y;
+			float rawY = floor(view.box.y / 2 - (y - view.origin.y) * view.box.y / view.viewBox.y);
 
-			for(int i = -1; i <= 1; i++){
-				if(rawY + i <= 0 || rawY + i >= view.box.y) continue;
-				for(int o = -1; o <= 1; o++){
-					if(rawX + o <= 0 || rawX + o >= view.box.x) continue;
-					image.setPixel(rawX + o, rawY + i, color.main);
+			if(rawY != NAN){
+				if(lastY == NAN) lastY = rawY;
+				int minY = std::min(rawY, lastY);
+				int highY = std::max(rawY, lastY);
+
+				for(int i = minY - 1; i <= highY + 1; i++){
+					if(i < 0 || i >= view.box.y) continue;
+					for(int o = rawX - 1; o <= rawX + 1; o++){
+						if(o < 0 || o >= view.box.x) continue;
+						image.setPixel(o, i, color.main);
+					}
 				}
 			}
+
+			lastY = rawY;
 		}
 	}
 
