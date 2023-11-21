@@ -2,7 +2,7 @@
 #include <math.h>
 #include <vector>
 #include "global.hpp"
-#include "view.cpp"
+#include "view.hpp"
 #include "functions/integral.hpp"
 
 double linear(double x) { return x; }
