@@ -2,21 +2,30 @@
 #include "global.hpp"
 #include "view.hpp"
 #include <math.h>
-#include <thread>
+#include <vector>
+#include <functional>
 
-std::jthread running;
+sf::Sprite generateView(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color, const std::function<double(double)>>> functions){
+	sf::Sprite sprite;
+	sprite.setTexture(*texture);
+	sprite.setScale(1, 1);
+    sprite.setPosition(300, 0);
 
-void viewThread(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color, double (*)(double)>> functions){
 	sf::Image image;
 	image.create(view.box.x, view.box.y, sf::Color::Transparent);
 
-	for (auto const& [color, function] : functions){
-		float lastY = NAN;
+	std::vector<double> xs;
+	for(int rawX = 0; rawX < view.box.x; rawX++) xs.push_back(view.origin.x + (rawX - view.box.x / 2) * view.viewBox.x / view.box.x);
 
+	for (auto const& [color, function] : functions){
+		std::vector<double> cxs(xs);
+		std::for_each(cxs.begin(), cxs.end(), [function](double &x){
+			x = function(x);
+		});
+
+		float lastY = NAN;
 		for(int rawX = 0; rawX < view.box.x; rawX++){
-			double x = view.origin.x + (rawX - view.box.x / 2) * view.viewBox.x / view.box.x;
-			double y = function(x);
-			float rawY = floor(view.box.y / 2 - (y - view.origin.y) * view.box.y / view.viewBox.y);
+			float rawY = floor(view.box.y / 2 - (cxs[rawX] - view.origin.y) * view.box.y / view.viewBox.y);
 
 			if(rawY != NAN){
 				if(lastY == NAN) lastY = rawY;
@@ -37,17 +46,6 @@ void viewThread(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color
 	}
 
 	texture->loadFromImage(image);
-}
-
-sf::Sprite generateView(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color, double (*)(double)>> functions){
-	sf::Sprite sprite;
-	sprite.setTexture(*texture);
-	sprite.setScale(1, 1);
-    sprite.setPosition(300, 0);
-
-	running.request_stop();
-	running = std::jthread(viewThread, texture, view, functions);
-	running.join();
 
 	return sprite;
 }

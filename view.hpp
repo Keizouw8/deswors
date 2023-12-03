@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "global.hpp"
+#include <functional>
 
 #ifndef VIEW_H
 #define VIEW_H
@@ -14,5 +15,5 @@ struct ViewPort{
 	Point viewBox;
 };
 
-sf::Sprite generateView(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color, double (*)(double)>> functions);
+sf::Sprite generateView(sf::Texture *texture, ViewPort view, std::vector<std::pair<Color, const std::function<double(double)>>> functions);
 #endif

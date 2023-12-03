@@ -7,8 +7,7 @@ double max(const std::function<double(double)> &f, double tl, double tu, double 
     int imax = 100;
     long double t1 = tl + (tu - tl)*((pow(5,0.5) - 1) / 2);
     long double t2 = tu - (tu - tl)*((pow(5,0.5) - 1) / 2);
-    long double pz;    
-    long double pzold = 0;
+    long double pz;
     double pt;
     long double ea;
 
@@ -22,7 +21,6 @@ double max(const std::function<double(double)> &f, double tl, double tu, double 
         }
 
         ea = fabs((tu - tl) / pt) * 100;
-        pzold = pz;
 
         if (ea < accuracy){
             break;

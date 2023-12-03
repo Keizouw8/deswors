@@ -5,6 +5,7 @@
 #include "global.hpp"
 #include "view.hpp"
 #include "functions/integral.hpp"
+#include <functional>
 
 double linear(double x) { return x; }
 double square(double x) { return x * x; }
@@ -12,12 +13,26 @@ double intLinear(double x) { return integral(0, x, linear); }
 
 Settings settings;
 
+// int main(){
+// 	std::vector<double> v;
+
+// 	for(double i = 0; i < 100; i++){
+// 		v.push_back(i);
+// 	}
+
+// 	std::for_each(v.begin(), v.end(), square);
+// 	for(auto i = v.begin(); i != v.end(); i++) std::cout << *i << ", ";
+// 	std::cout << std::endl;
+
+// 	return 0;
+// }
+
 int main(){
 	settings.import("settings.yaml");
-	std::vector<std::pair<Color, double (*)(double)>> functions;
-	functions.push_back(std::pair<Color, double (*)(double)>(settings.colors[1], linear));
-	functions.push_back(std::pair<Color, double (*)(double)>(settings.colors[2], square));
-	functions.push_back(std::pair<Color, double (*)(double)>(settings.colors[3], intLinear));
+	std::vector<std::pair<Color, const std::function<double(double)>>> functions;
+	functions.push_back(std::pair<Color, const std::function<double(double)>>(settings.colors[1], linear));
+	functions.push_back(std::pair<Color, const std::function<double(double)>>(settings.colors[2], square));
+	functions.push_back(std::pair<Color, const std::function<double(double)>>(settings.colors[3], intLinear));
 	
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Deswors");
 	sf::View defaultView = window.getDefaultView();
@@ -68,7 +83,7 @@ int main(){
 			}
 			if(event.type == sf::Event::MouseButtonReleased){
 				if(event.mouseButton.button == sf::Mouse::Left){
-					if(viewDrag = true){
+					if(viewDrag == true){
 						sf::FloatRect position = viewSprite.getGlobalBounds();
 						
 						viewOrigin.x += (300 - position.left) * viewDimensions.x / position.width;

@@ -6,7 +6,7 @@
 Settings::Settings(){}
 
 Settings::Settings(std::string path){
-	import(path);
+	Settings::import(path);
 }
 
 void Settings::import(std::string path){
